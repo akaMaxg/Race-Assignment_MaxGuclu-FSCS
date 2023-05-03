@@ -6,6 +6,6 @@
     <RootNamespace>Race_Assignment_MaxGuclu_FSCS</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <StartupObject></StartupObject>
   </PropertyGroup>
-
 </Project>

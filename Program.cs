@@ -10,12 +10,9 @@ namespace Race_Assignment_MaxGuclu_FSCS
     {
         static void Main(string[] args)
         {
-            Race.RaceIntroduction(Helper.TrackCreation(), Helper.CarCreation());
-            Race.RacerOne(Helper.TrackCreation(), Helper.CarCreation(), Helper.EventCreation());
-            Race.RacerTwo(Helper.TrackCreation(), Helper.CarCreation(), Helper.EventCreation());
+            Task.Run(async () => await Race.RunRace()).Wait();
+            Console.ReadLine();
 
-            Console.WriteLine("Is it running?___");
-            Console.ReadKey();
         }
     }
 }
