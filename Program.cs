@@ -1,6 +1,8 @@
 ﻿using Race_Assignment_MaxGuclu_FSCS.Models;
 using Race_Assignment_MaxGuclu_FSCS.Services;
 using Race_Assignment_MaxGuclu_FSCS.Utilities;
+using Spectre.Console;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Race_Assignment_MaxGuclu_FSCS
 {
@@ -8,14 +10,14 @@ namespace Race_Assignment_MaxGuclu_FSCS
 
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Race.RaceIntroduction(Helper.TrackCreation(), Helper.CarCreation());
-            Race.RacerOne(Helper.TrackCreation(), Helper.CarCreation(), Helper.EventCreation());
-            Race.RacerTwo(Helper.TrackCreation(), Helper.CarCreation(), Helper.EventCreation());
+            await WaitingFunctions.CountDown();
+            UI.TableGenerator(Helper.TrackCreation(), Helper.CarCreation(), Helper.EventCreation());
 
-            Console.WriteLine("Is it running?___");
-            Console.ReadKey();
+            Task.Run(async () => await Race.RunRace()).Wait();
+            Console.ReadLine();
+
         }
     }
 }

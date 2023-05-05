@@ -6,6 +6,10 @@
     <RootNamespace>Race_Assignment_MaxGuclu_FSCS</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <StartupObject></StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console" Version="0.46.0" />
+  </ItemGroup>
 </Project>
