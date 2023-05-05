@@ -49,10 +49,17 @@ namespace Race_Assignment_MaxGuclu_FSCS.Utilities
     }
     public class WaitingFunctions
     {
-        public async static Task WaitThree()
+        public async static Task CountDown()
         {
+            int i = 3;
+            while (i >= 1)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                Console.WriteLine($"{i}...");
+                i--;
+            }
             await Task.Delay(TimeSpan.FromSeconds(1));
-            Console.WriteLine("\n3..");
+            Console.WriteLine($"GO!");
         }
         public async static Task WaitTwo()
         {
