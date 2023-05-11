@@ -1,23 +1,20 @@
 ﻿using Race_Assignment_MaxGuclu_FSCS.Models;
 using Race_Assignment_MaxGuclu_FSCS.Services;
 using Race_Assignment_MaxGuclu_FSCS.Utilities;
-using Spectre.Console;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Race_Assignment_MaxGuclu_FSCS
 {
 
-
     internal class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            await WaitingFunctions.CountDown();
-            UI.TableGenerator(Helper.TrackCreation(), Helper.CarCreation(), Helper.EventCreation());
-
-            Task.Run(async () => await Race.RunRace()).Wait();
-            Console.ReadLine();
-
+            Console.WriteLine("Welcome, press any key to start the program.");
+            Console.ReadKey();
+            Console.WriteLine("Not that one... im just kidding, i wont do it again i swear - press something.\n");
+            Console.ReadKey();
+            //Run program
+            Race.RunRace(Helper.CarCreation(), Helper.EventCreation(), Helper.TrackCreation());
         }
     }
 }

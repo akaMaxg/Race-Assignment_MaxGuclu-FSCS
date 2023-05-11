@@ -1,17 +1,17 @@
 ﻿namespace Race_Assignment_MaxGuclu_FSCS.Models
 {
-    public class Car
+    public class Car //car object 
     {
-        public string Color { get; set; }
         public double Speed { get; set; }
+        public double distanceTraveled { get; set; }
         public string Name { get; set; }
-        public Car(string name, string color, double speed)  //Constructor that takes five parameters.
+        public List<string> Incidents { get; set; }
+        public Car(string name, double speed) //Constructor
         {
             this.Name = name;
-            this.Color = color;
             this.Speed = speed;
+            distanceTraveled = 0;
+            Incidents = new List<string>();
         }
     }
-
-
 }

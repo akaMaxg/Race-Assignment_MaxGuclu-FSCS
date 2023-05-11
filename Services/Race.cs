@@ -1,194 +1,109 @@
 ﻿using Race_Assignment_MaxGuclu_FSCS.Models;
 using Race_Assignment_MaxGuclu_FSCS.Utilities;
+using System.Diagnostics;
 
 namespace Race_Assignment_MaxGuclu_FSCS.Services
 {
     public class Race
     {
-        public async static Task RunRace()
+        public async static Task RunRace(Car[] cars, Event[] events, Track track) //Main logic code for race
         {
-            Race.RaceIntroduction(Helper.TrackCreation(), Helper.CarCreation());
-            Task.Run(async () => await Race.RacerOne(Helper.TrackCreation(), Helper.CarCreation(), Helper.EventCreation())).Wait();
-        }
-
-
-        public static void RaceIntroduction (Track[] track, Car[] contenders)
+            Race.PreRace(cars, events, track);//Introduction + Countdown
             {
-            Console.WriteLine("Welcome to this beautiful track of Bertas Backe, where we host an annual race");
-            Console.WriteLine("\nLadies and gentlemen... The track length is meters and the drivers are approaching! ");
+                List<Task> tasks = new List<Task>(); //Creates a list of tasks that should all be awaited before the program finishes
 
-            foreach (var item in contenders)
-            {
-                Console.WriteLine(item.Name + "\n");
-            }
-            Console.WriteLine("...and off they go!");
-        }
-        public async static Task RacerOne(Track[] track, Car[] contenders, Event[] events)
-        {
-            Input.AwaitKeyInput(contenders, track);
-            Console.Write(contenders[0].Name + " Sets off!...\n");
-            while (track[0].Length > 1)
-            {
-                int eventGenerator = new Random().Next(1, 101);
-                switch (eventGenerator)
+                for (int i = 0; i < cars.Length; i++)
                 {
-                    case int n when (n >= 1 && n <= 2):
-                        track[0].Length = track[0].Length - events[0].Effect;
-                        Console.Write("RF!(-30s)... ");
-                        break;
-                    case int n when (n >= 3 && n <= 6):
-                        track[0].Length = track[0].Length - events[1].Effect;
-                        Console.Write("FT!(-20s)... ");
-                        break;
-                    case int n when (n >= 7 && n <= 16):
-                        track[0].Length = track[0].Length - events[2].Effect;
-                        Console.Write("B!(-10s)... ");
-                        break;
-                    case int n when (n >= 17 && n <= 26):
-                        track[0].Length = track[0].Length - events[3].Effect;
-                        contenders[0].Speed = contenders[0].Speed - events[4].Effect;
-                        Console.Write("EP!(-1km/h)... ");
-                        break;
-                    case int n when (n >= 27 && n <= 100):
-                        track[0].Length = track[0].Length - contenders[0].Speed;
-                        break;
-                    default:
-                        Console.WriteLine("Unknown error ");
-                        break;
+                    int y = i; 
+                    Task task = Task.Run(() => Race.Racer(cars[y], events, track)); //Runs the main-race function Service->Race->Racer for all participants
+                    tasks.Add(task);
                 }
-                Console.Write(Math.Round((track[0].Length / 1000), 2) + " KM left!... ");
-                await WaitingFunctions.oneRound();
+
+                while (track.Position.Count == 0) // Key to post status update as long as noone has finished
+                {
+                    Console.ReadKey();
+                    for (int i = 0; i < cars.Length; i++)
+                    {
+                        int z = i;
+                        Task statusPost = Task.Run(() => Helper.PrintStatus(cars[z])); // Calls a print status functions 
+                    }
+                }
+                await Task.WhenAll(tasks); //Waits for each car object to finish their race
+                Console.WriteLine("With that, the race has finished, thank you for participating!");
             }
-            Console.WriteLine(contenders[0].Name + " FINISHES!!");
         }
-        public async static void RacerTwo(Track[] track, Car[] contenders, Event[] events)
+        public async static Task PreRace(Car[] contenders, Event[] events, Track tracks) //Introduction + Countdown function
+        {
+            Console.WriteLine("Welcome to this beautiful track of Bertas Backe, where we host an annual race!\n\nThese are todays contestans:");
+            foreach (var car in contenders)
+            {
+                Console.WriteLine($"> {car.Name}");
+            }
+            await WaitingFunctions.CountDown(3);
+        }
+        public async static Task Racer(Car contender, Event[] events, Track track) // Race code
         {
 
-            while (track[1].Length > 1)
-            {
-                int eventGenerator = new Random().Next(1, 101);
-                switch (eventGenerator)
-                {
-                    case int n when (n >= 1 && n <= 2):
-                        Console.WriteLine(events[0].Type);
-                        track[1].Length = track[1].Length - events[0].Effect;
-                        Console.WriteLine(contenders[1].Name + " appears to need refueling!");
-                        break;
-                    case int n when (n >= 3 && n <= 6):
-                        Console.WriteLine(events[1].Type);
-                        track[1].Length = track[1].Length - events[1].Effect;
-                        Console.WriteLine(contenders[1].Name + "'s tire goes flat!");
-                        break;
-                    case int n when (n >= 7 && n <= 16):
-                        Console.WriteLine(events[2].Type);
-                        track[1].Length = track[1].Length - events[2].Effect;
-                        Console.WriteLine(contenders[1].Name + " needs to get their windshield cleaned, full of bugs!");
-                        break;
-                    case int n when (n >= 17 && n <= 26):
-                        Console.WriteLine(events[3].Type);
-                        track[1].Length = track[1].Length - events[3].Effect;
-                        contenders[1].Speed = contenders[1].Speed - events[4].Effect;
-                        Console.WriteLine(contenders[1].Name + "'s vehicle is sputtering, engine problem?!");
-                        break;
-                    case int n when (n >= 27 && n <= 100):
-                        Console.WriteLine(events[4].Type);
-                        track[1].Length = track[1].Length - contenders[0].Speed;
-                        Console.WriteLine(contenders[1].Name + " is soaring onwards!");
-                        break;
-                    default:
-                        Console.WriteLine("Unknown error");
-                        break;
-                }
-                Console.WriteLine(contenders[1].Name + " has about... " + Math.Round((track[1].Length / 1000), 2) + " KM to go!");
-                await WaitingFunctions.oneRound();
-            }
-            Console.WriteLine(contenders[1].Name + " FINISHES!!");
-        }
-        public async static void RacerThree(Track[] track, Car[] contenders, Event[] events)
-        {
+            double distanceSecondsPerEvent = 30; //Threshold for event
+            Random randomGenerator = new Random();
 
-            while (track[2].Length > 1)
-            {
-                int eventGenerator = new Random().Next(1, 101);
-                switch (eventGenerator)
-                {
-                    case int n when (n >= 1 && n <= 2):
-                        Console.WriteLine(events[0].Type);
-                        track[2].Length = track[2].Length - events[0].Effect;
-                        Console.WriteLine(contenders[2].Name + " appears to need refueling!");
-                        break;
-                    case int n when (n >= 3 && n <= 6):
-                        Console.WriteLine(events[1].Type);
-                        track[2].Length = track[2].Length - events[1].Effect;
-                        Console.WriteLine(contenders[2].Name + "'s tire goes flat!");
-                        break;
-                    case int n when (n >= 7 && n <= 16):
-                        Console.WriteLine(events[2].Type);
-                        track[2].Length = track[2].Length - events[2].Effect;
-                        Console.WriteLine(contenders[2].Name + " needs to get their windshield cleaned, full of bugs!");
-                        break;
-                    case int n when (n >= 17 && n <= 26):
-                        Console.WriteLine(events[3].Type);
-                        track[2].Length = track[2].Length - events[3].Effect;
-                        contenders[1].Speed = contenders[2].Speed - events[4].Effect;
-                        Console.WriteLine(contenders[2].Name + "'s vehicle is sputtering, engine problem?!");
-                        break;
-                    case int n when (n >= 27 && n <= 100):
-                        Console.WriteLine(events[4].Type);
-                        track[2].Length = track[2].Length - contenders[2].Speed;
-                        Console.WriteLine(contenders[2].Name + " is soaring onwards!");
-                        break;
-                    default:
-                        Console.WriteLine("Unknown error");
-                        break;
-                }
-                Console.WriteLine(contenders[2].Name + " has about... " + Math.Round((track[2].Length / 1000), 2) + " KM to go!");
-                await WaitingFunctions.oneRound();
-            }
-            Console.WriteLine(contenders[2].Name + " FINISHES!!");
-        }
-        public async static void RacerFour(Track[] track, Car[] contenders, Event[] events)
-        {
+            Stopwatch stopwatch = Stopwatch.StartNew(); //Start timer
 
-            while (track[2].Length > 1)
+
+            while (contender.distanceTraveled < track.Length) // Has the car exceeded the length of the track?
             {
-                int eventGenerator = new Random().Next(1, 101);
-                switch (eventGenerator)
+                double elapsedSeconds = stopwatch.Elapsed.TotalSeconds; //Updates current timer-standing
+
+                if (elapsedSeconds % 30 == 0) //Check if 30s has passed, triggers an event
                 {
-                    case int n when (n >= 1 && n <= 2):
-                        Console.WriteLine(events[0].Type);
-                        track[3].Length = track[3].Length - events[0].Effect;
-                        Console.WriteLine(contenders[3].Name + " appears to need refueling!");
-                        break;
-                    case int n when (n >= 3 && n <= 6):
-                        Console.WriteLine(events[1].Type);
-                        track[3].Length = track[3].Length - events[1].Effect;
-                        Console.WriteLine(contenders[3].Name + "'s tire goes flat!");
-                        break;
-                    case int n when (n >= 7 && n <= 16):
-                        Console.WriteLine(events[3].Type);
-                        track[3].Length = track[3].Length - events[2].Effect;
-                        Console.WriteLine(contenders[3].Name + " needs to get their windshield cleaned, full of bugs!");
-                        break;
-                    case int n when (n >= 17 && n <= 26):
-                        Console.WriteLine(events[3].Type);
-                        track[3].Length = track[3].Length - events[3].Effect;
-                        contenders[3].Speed = contenders[3].Speed - events[4].Effect;
-                        Console.WriteLine(contenders[3].Name + "'s vehicle is sputtering, engine problem?!");
-                        break;
-                    case int n when (n >= 27 && n <= 100):
-                        Console.WriteLine(events[4].Type);
-                        track[3].Length = track[3].Length - contenders[2].Speed;
-                        Console.WriteLine(contenders[3].Name + " is soaring onwards!");
-                        break;
-                    default:
-                        Console.WriteLine("Unknown error");
-                        break;
+                    int eventGenerator = new Random().Next(1, 101);
+                    switch (eventGenerator)
+                    {
+                        case int n when (n >= 1 && n <= 2): //Between 1-2, a 2% chance, events[0] effects kicks in, which a temporary speedreduction of 33,3m/s, i.e. 0 progress.
+                            contender.distanceTraveled = contender.distanceTraveled + ((contender.Speed + events[0].Effect) * distanceSecondsPerEvent); //
+                            contender.Incidents.Add(events[0].Type); //Adds it to a log for tracking
+                            Console.WriteLine($"{contender.Name} goes into a pitstop for refueling!");
+                            break;
+                        case int n when (n >= 3 && n <= 6): // 4% chance for flat tire, reduced speed by 22,2m/s
+                            contender.distanceTraveled = contender.distanceTraveled + ((contender.Speed + events[1].Effect) * distanceSecondsPerEvent);
+                            contender.Incidents.Add(events[1].Type);
+                            Console.WriteLine($"{contender.Name} has flat tire!");
+                            break;
+                        case int n when (n >= 7 && n <= 16): //Similar set up
+                            contender.distanceTraveled = contender.distanceTraveled + ((contender.Speed + events[2].Effect) * distanceSecondsPerEvent);
+                            contender.Incidents.Add(events[2].Type);
+                            Console.WriteLine($"{contender.Name} slows down to wipe bugs off their windshield!");
+                            break;
+                        case int n when (n >= 17 && n <= 36): //20% chance for engine problems
+                            contender.Speed = contender.Speed + events[3].Effect; //First permanantly decreases speed by 1 km/h,  -0.277 m/s, then proceeds.
+                            contender.distanceTraveled = contender.distanceTraveled + (contender.Speed * distanceSecondsPerEvent);
+                            contender.Incidents.Add(events[3].Type);
+                            Console.WriteLine($"{contender.Name}'s engine starts puttering!");
+                            break;
+                        case int n when (n >= 37 && n <= 100): // Smooth sailing
+                            contender.distanceTraveled = contender.distanceTraveled + (contender.Speed * distanceSecondsPerEvent);
+                            contender.Incidents.Add(events[4].Type);
+                            break;
+                        default: // I dont want this plz
+                            Console.WriteLine("Unknown error ");
+                            break;
+                    }
                 }
-                Console.WriteLine(contenders[3].Name + " has about... " + Math.Round((track[3].Length / 1000), 2) + " KM to go!");
-                await WaitingFunctions.oneRound();
+                    if (elapsedSeconds % 1 == 0) //Updates cars current position every second
+                    {
+                        contender.distanceTraveled = contender.distanceTraveled + (contender.Speed * 1);
+                    }
             }
-            Console.WriteLine(contenders[3].Name + " FINISHES!!");
+            if (track.Position.Count == 0) //After the while loop, if no other cars has added entry to track position, add car and pronounce winner
+            {
+                track.Position.Add(contender.Name);
+                Console.WriteLine($"{contender.Name} comes in first place!");
+            }
+            else if (contender.distanceTraveled > track.Length) //Else just add the car to the list
+            {
+                track.Position.Add(contender.Name);
+                Console.WriteLine($"{contender.Name} crosses the finish line!");
+            }
         }
     }
 }

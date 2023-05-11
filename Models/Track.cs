@@ -1,15 +1,14 @@
 ﻿namespace Race_Assignment_MaxGuclu_FSCS.Models
 {
-    public class Track
+    public class Track //Track object
     {
-        public string Slot { get; set; }
+        public double Length { get; set; } //Using double for precision
+        public List<string> Position { get; set; }
 
-        public double Length { get; set; } //double because the distance will be measured in seconds
-
-        public Track(string slot, double length)  //Constructor that takes 1 parameter
+        public Track(double length)  //Constructor
         {
-            this.Slot = slot;
             this.Length = length;
+            Position = new List<string>();
 
         }
 
