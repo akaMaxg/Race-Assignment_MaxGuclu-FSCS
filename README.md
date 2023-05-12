@@ -46,10 +46,10 @@ In general, the entire program is divided into Models, Services and Utility. Thi
 
 
 ### [X] Det ska finnas några slumpmässiga händelser som kan inträffa för en bil.      
-### Slut på bensin	1/50	Behöver tanka, stannar 30 sekunder   
-### Punktering	2/50	Behöver byta däck, stannar 20 sekunder   
-### Fågel på vindrutan	5/50	Behöver tvätta vindrutan, stannar 10 sekunder   
-### Motorfel	10/50	Hastigheten på bilen sänks med 1km/h   
+##### Slut på bensin	1/50	Behöver tanka, stannar 30 sekunder   
+##### Punktering	2/50	Behöver byta däck, stannar 20 sekunder   
+##### Fågel på vindrutan	5/50	Behöver tvätta vindrutan, stannar 10 sekunder   
+##### Motorfel	10/50	Hastigheten på bilen sänks med 1km/h   
 #### [X] Var 30e sekund ska det för varje bil slumpas fram en händelse. Bara en händelse kan inträffa per gång.   
    
 #### [X] Alla bilar ska starta samtidigt   
