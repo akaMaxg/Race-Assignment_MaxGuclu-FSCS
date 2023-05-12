@@ -35,7 +35,7 @@ In which, a timer starts and an if statements randoms an event every 30s. Howeve
 #### Overall
 In general, the entire program is divided into Models, Services and Utility. This is to make the code accessible and easy to maintain. 
 
-## The requirements listed for the assignment below with motivation to how I've solved them:   
+## The requirements listed for the assignment below and checkbox for backlog-> done.   
 
 #### [X] Varje bil ska vara ett objekt, varje bil ska ha ett namn och minst två bilar i denna tävling   
 #### [X] Tävlingen går ut på att bilarna ska köra en sträcka på exempelvis 10 km   
@@ -46,10 +46,10 @@ In general, the entire program is divided into Models, Services and Utility. Thi
 
 
 ### [X] Det ska finnas några slumpmässiga händelser som kan inträffa för en bil.      
-#### Slut på bensin	1/50	Behöver tanka, stannar 30 sekunder   
-#### Punktering	2/50	Behöver byta däck, stannar 20 sekunder   
-#### Fågel på vindrutan	5/50	Behöver tvätta vindrutan, stannar 10 sekunder   
-#### Motorfel	10/50	Hastigheten på bilen sänks med 1km/h   
+### Slut på bensin	1/50	Behöver tanka, stannar 30 sekunder   
+### Punktering	2/50	Behöver byta däck, stannar 20 sekunder   
+### Fågel på vindrutan	5/50	Behöver tvätta vindrutan, stannar 10 sekunder   
+### Motorfel	10/50	Hastigheten på bilen sänks med 1km/h   
 #### [X] Var 30e sekund ska det för varje bil slumpas fram en händelse. Bara en händelse kan inträffa per gång.   
    
 #### [X] Alla bilar ska starta samtidigt   
